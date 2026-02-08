@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Windows Live Hotmail</title>
     <style>
-        /* FONTO CSS PURO - SIN IMÁGENES EXTERNAS */
+        /* FONDO CSS PURO */
         body { 
             background: #0078d4; 
             background: linear-gradient(180deg, #005a9e 0%, #a6d1ff 100%); 
@@ -19,7 +19,7 @@
 
         .hidden { display: none !important; }
 
-        /* CAJA DE LOGIN ESTILO 2009 */
+        /* CAJA DE LOGIN */
         .login-box { 
             background: white; 
             padding: 40px; 
@@ -32,128 +32,106 @@
         .wl-logo { font-size: 26px; color: #444; margin-bottom: 20px; font-weight: 300; }
         .wl-logo span { color: #0078d4; font-weight: bold; }
 
-        /* PERFIL RECORDADO */
         .user-pill {
-            display: flex; 
-            align-items: center; 
-            background: #f3f3f3; 
-            padding: 12px; 
-            border-radius: 5px; 
-            margin-bottom: 15px; 
-            border: 1px solid #ddd;
+            display: flex; align-items: center; background: #f3f3f3; 
+            padding: 12px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #ddd;
         }
-        .user-pill .avatar-circle { 
-            width: 45px; height: 45px; background: #ccc; 
-            border-radius: 3px; margin-right: 12px; 
-            display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;
-        }
+        .user-pill .avatar-circle { width: 45px; height: 45px; background: #ccc; border-radius: 3px; margin-right: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; }
 
-        input { 
-            width: 100%; padding: 10px; margin: 8px 0; 
-            border: 1px solid #999; border-radius: 2px; 
-            box-sizing: border-box; font-size: 14px;
-        }
+        input, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #999; border-radius: 2px; box-sizing: border-box; font-size: 14px; }
 
         .btn { 
-            background: #ff9d00;
             background: linear-gradient(#ffbc40, #ff9d00); 
             color: white; border: 1px solid #d48a00; 
             padding: 8px 25px; cursor: pointer; 
             font-weight: bold; float: right; border-radius: 3px;
         }
-        .btn:hover { background: #ffaa33; }
 
         /* INTERFAZ DE CORREO */
         #mail-ui { width: 100vw; height: 100vh; background: #fff; display: flex; flex-direction: column; }
+        .top-bar { background: linear-gradient(#0078d4, #005a9e); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
         
-        .top-bar { 
-            background: linear-gradient(#0078d4, #005a9e); 
-            color: white; padding: 10px 20px; 
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .nav-bar { background: #eef5fb; border-bottom: 1px solid #cedee9; padding: 8px 20px; display: flex; gap: 10px; }
+        .nav-bar button { background: #fff; border: 1px solid #ccc; padding: 5px 15px; cursor: pointer; border-radius: 3px; font-size: 12px; }
+        .nav-bar button:hover { background: #f0f0f0; }
 
-        .main-container { display: flex; flex-grow: 1; }
-        
-        .sidebar { 
-            width: 210px; background: #f4f9fd; 
-            border-right: 1px solid #cedee9; padding: 20px; 
-        }
+        .main-container { display: flex; flex-grow: 1; overflow: hidden; }
+        .sidebar { width: 210px; background: #f4f9fd; border-right: 1px solid #cedee9; padding: 20px; }
         .sidebar div { padding: 6px 0; color: #00457e; cursor: pointer; font-size: 14px; }
-        .sidebar div:hover { text-decoration: underline; }
-
-        .inbox-view { flex-grow: 1; padding: 30px; }
         
-        .footer-links { margin-top: 30px; font-size: 12px; color: #666; }
-        .footer-links a { color: #0066cc; text-decoration: none; }
+        .inbox-view { flex-grow: 1; overflow-y: auto; }
+        .mail-item { display: grid; grid-template-columns: 200px 1fr 100px; padding: 12px 20px; border-bottom: 1px solid #eee; font-size: 13px; cursor: pointer; }
+        .mail-item:hover { background: #f5faff; }
+        .mail-item.unread { font-weight: bold; background: #fff; }
+
+        /* VENTANA REDACTAR (MODAL) */
+        #compose-modal { 
+            display: none; position: fixed; top: 10%; left: 25%; width: 50%; 
+            background: white; border: 1px solid #00457e; box-shadow: 0 0 50px rgba(0,0,0,0.5); z-index: 1000; border-radius: 5px; 
+        }
+        .compose-head { background: #0078d4; color: white; padding: 10px; display: flex; justify-content: space-between; border-radius: 4px 4px 0 0; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="login-ui" class="login-box">
         <div class="wl-logo">Windows Live <span>Hotmail</span></div>
-        
         <div id="remembered-user" class="hidden">
             <div class="user-pill">
                 <div class="avatar-circle">👤</div>
-                <div>
-                    <b id="rem-name"></b><br>
-                    <small id="rem-email" style="color:#666;"></small>
-                </div>
+                <div><b id="rem-name"></b><br><small id="rem-email" style="color:#666;"></small></div>
             </div>
-            <p style="font-size:13px; color:#444;">Escribe tu contraseña:</p>
             <input type="password" id="pass-confirm" placeholder="Contraseña">
             <button class="btn" onclick="validarEntrada()">Entrar</button>
-            <div style="clear:both; padding-top:20px; font-size:12px;">
-                <a href="#" onclick="olvidarCuenta()" style="color:#0066cc;">Entrar con otra cuenta</a>
-            </div>
+            <div style="clear:both; padding-top:20px; font-size:12px;"><a href="#" onclick="olvidarCuenta()" style="color:#0066cc;">Usar otra cuenta</a></div>
         </div>
-
         <div id="new-user-ui">
-            <p style="font-size:14px; color:#666; margin-bottom:15px;">Regístrate en Intersol ID</p>
             <input type="text" id="r-nom" placeholder="Nombre completo">
             <input type="text" id="r-usu" placeholder="nombre-de-usuario">
-            <div style="font-size: 11px; color: #888; margin-bottom: 5px;">@intersol.com</div>
             <input type="password" id="r-pas" placeholder="Contraseña">
-            
             <button class="btn" onclick="crearCuenta()">Registrarse</button>
-            <div class="footer-links">
-                © 2026 Intersol Corporation
-            </div>
         </div>
     </div>
 
     <div id="mail-ui" class="hidden">
         <div class="top-bar">
-            <span style="font-size:18px;"><b>Windows Live</b> Hotmail</span>
-            <div style="font-size:12px;">
-                <span id="mi-id-display"></span> | 
-                <span style="cursor:pointer; text-decoration:underline" onclick="cerrarSesionHotmail()">Cerrar sesión</span>
-            </div>
+            <span><b>Windows Live</b> Hotmail</span>
+            <div style="font-size:12px;"><span id="mi-id-display"></span> | <span style="cursor:pointer" onclick="cerrarSesionHotmail()">Cerrar sesión</span></div>
+        </div>
+        <div class="nav-bar">
+            <button onclick="abrirRedactar()" style="background: #ff9d00; color: white; border-color: #d48a00; font-weight: bold;">Nuevo</button>
+            <button onclick="location.href='msn.html'">Messenger</button>
+            <button>Eliminar</button>
         </div>
         <div class="main-container">
             <div class="sidebar">
-                <button onclick="location.href='msn.html'" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer;">Ir a Messenger</button>
                 <div style="font-weight:bold; background:#e2eaf3; border-radius:3px; padding-left:5px;">Bandeja de entrada</div>
                 <div>Correo no deseado</div>
-                <div>Borradores</div>
                 <div>Enviados</div>
                 <div>Eliminados</div>
             </div>
-            <div class="inbox-view">
-                <h2 id="welcome-msg" style="color:#00457e; font-weight:300;">Cargando tu bandeja...</h2>
-                <hr border="0" style="border-top:1px solid #eee;">
-                <div id="lista-correos" style="color:#666; margin-top:20px;">
-                    No tienes mensajes nuevos en este momento.
+            <div class="inbox-view" id="lista-correos">
                 </div>
+        </div>
+    </div>
+
+    <div id="compose-modal">
+        <div class="compose-head"><span>Nuevo mensaje</span><span onclick="cerrarRedactar()" style="cursor:pointer">X</span></div>
+        <div style="padding: 20px;">
+            <input type="text" id="m-para" placeholder="Para: ejemplo@intersol.com">
+            <input type="text" id="m-asunto" placeholder="Asunto:">
+            <textarea id="m-mensaje" rows="12" style="resize:none;" placeholder="Escribe tu mensaje aquí..."></textarea>
+            <div style="margin-top:10px; text-align:right;">
+                <button class="btn" style="float:none;" onclick="enviarCorreo()">Enviar</button>
+                <button onclick="cerrarRedactar()" style="padding:8px 15px; border:1px solid #ccc; background:#f4f4f4; cursor:pointer; border-radius:3px;">Cancelar</button>
             </div>
         </div>
     </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+    import { getDatabase, ref, set, get, child, push, onValue } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-    // Mismo Firebase que el MSN para estar interconectados
     const firebaseConfig = {
         apiKey: "AIzaSyAWMmRpC9chHuBMWbMCRFeEzhQjh1dJ0Uw",
         databaseURL: "https://intersol-ce061-default-rtdb.firebaseio.com"
@@ -167,7 +145,6 @@
         if (sessionStorage.getItem('hotmail_active') === 'true' && session) {
             mostrarHotmail();
         } else if (session) {
-            // Usuario recordado en LocalStorage
             document.getElementById('new-user-ui').classList.add('hidden');
             document.getElementById('remembered-user').classList.remove('hidden');
             document.getElementById('rem-name').innerText = session.nombre;
@@ -175,58 +152,79 @@
         }
     }
 
-    window.validarEntrada = async function() {
-        const pass = document.getElementById('pass-confirm').value;
-        const path = session.email.replace(/\./g, '_');
-        
-        const dbRef = ref(db);
-        try {
-            const snapshot = await get(child(dbRef, `intersol/usuarios/${path}`));
-            if (snapshot.exists() && snapshot.val().password === pass) {
-                sessionStorage.setItem('hotmail_active', 'true');
-                mostrarHotmail();
-            } else {
-                alert("Contraseña incorrecta para " + session.email);
-            }
-        } catch (e) { alert("Error de conexión."); }
-    };
-
     window.crearCuenta = async function() {
         const nom = document.getElementById('r-nom').value;
         const usuRaw = document.getElementById('r-usu').value.trim().toLowerCase();
         const pas = document.getElementById('r-pas').value;
-
-        if(!nom || !usuRaw || !pas) return alert("Por favor, rellena todos los campos.");
-
+        if(!nom || !usuRaw || !pas) return alert("Completa todos los campos.");
         const email = usuRaw + "@intersol.com";
         const path = email.replace(/\./g, '_');
         const userObj = { nombre: nom, email: email, password: pas };
-
         await set(ref(db, 'intersol/usuarios/' + path), userObj);
         localStorage.setItem('intersol_user', JSON.stringify(userObj));
         sessionStorage.setItem('hotmail_active', 'true');
         location.reload();
     };
 
+    window.validarEntrada = async function() {
+        const pass = document.getElementById('pass-confirm').value;
+        const path = session.email.replace(/\./g, '_');
+        const snapshot = await get(child(ref(db), `intersol/usuarios/${path}`));
+        if (snapshot.exists() && snapshot.val().password === pass) {
+            sessionStorage.setItem('hotmail_active', 'true');
+            mostrarHotmail();
+        } else { alert("Contraseña incorrecta."); }
+    };
+
     function mostrarHotmail() {
         document.getElementById('login-ui').classList.add('hidden');
         document.getElementById('mail-ui').classList.remove('hidden');
         document.getElementById('mi-id-display').innerText = session.email;
-        document.getElementById('welcome-msg').innerText = "¡Hola de nuevo, " + session.nombre + "!";
         document.body.style.background = "#fff";
+        cargarBandeja();
     }
 
-    window.cerrarSesionHotmail = () => {
-        sessionStorage.removeItem('hotmail_active');
-        location.reload();
+    function cargarBandeja() {
+        onValue(ref(db, 'intersol/correos'), (snap) => {
+            const cont = document.getElementById('lista-correos');
+            cont.innerHTML = "";
+            let hay = false;
+            snap.forEach(c => {
+                const m = c.val();
+                if(m.para === session.email) {
+                    hay = true;
+                    const fecha = new Date(m.fecha).toLocaleDateString();
+                    cont.innerHTML += `<div class="mail-item unread">
+                        <span>${m.de}</span>
+                        <span>${m.asunto}</span>
+                        <span style="text-align:right; color:#888;">${fecha}</span>
+                    </div>`;
+                }
+            });
+            if(!hay) cont.innerHTML = "<div style='padding:40px; color:#999; text-align:center;'>No hay mensajes nuevos.</div>";
+        });
+    }
+
+    window.enviarCorreo = async function() {
+        const para = document.getElementById('m-para').value.trim().toLowerCase();
+        const asunto = document.getElementById('m-asunto').value;
+        const mensaje = document.getElementById('m-mensaje').value;
+        if(!para || !asunto) return alert("Faltan datos.");
+        await push(ref(db, 'intersol/correos'), {
+            de: session.email, para, asunto, mensaje, fecha: Date.now()
+        });
+        alert("Mensaje enviado.");
+        cerrarRedactar();
     };
 
-    window.olvidarCuenta = () => {
-        if(confirm("¿Quieres eliminar los datos recordados? Esto también cerrará el Messenger.")){
-            localStorage.removeItem('intersol_user');
-            location.reload();
-        }
+    window.abrirRedactar = () => document.getElementById('compose-modal').style.display = 'block';
+    window.cerrarRedactar = () => {
+        document.getElementById('compose-modal').style.display = 'none';
+        document.getElementById('m-para').value = ""; document.getElementById('m-asunto').value = ""; document.getElementById('m-mensaje').value = "";
     };
+
+    window.cerrarSesionHotmail = () => { sessionStorage.removeItem('hotmail_active'); location.reload(); };
+    window.olvidarCuenta = () => { localStorage.removeItem('intersol_user'); location.reload(); };
 
     init();
 </script>
