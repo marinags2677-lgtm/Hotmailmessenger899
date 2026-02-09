@@ -2,66 +2,89 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Intersol Mail - Suite Edition</title>
+    <title>Intersol Mail - Suite 2026</title>
     <style>
         :root { 
             --intersol-blue: #0078d7; 
             --header-bg: #e5effa;
             --border-color: #a0b4cd;
+            --text-dark: #333;
         }
         
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Segoe UI', Arial, sans-serif; overflow: hidden; background: #fff; }
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Segoe UI', Tahoma, sans-serif; overflow: hidden; background: #fff; }
         .hidden { display: none !important; }
 
-        /* --- LOGIN --- */
+        /* --- PANTALLA DE LOGIN --- */
         #login-screen {
-            background: #004b8d;
+            background: #004b8d linear-gradient(135deg, #003366 0%, #0078d7 100%);
             height: 100vh; display: flex; justify-content: center; align-items: center;
         }
         .login-card {
             background: white; padding: 40px; border-radius: 3px; width: 320px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); text-align: center;
         }
-        .login-card h2 { font-weight: 300; margin-bottom: 20px; }
+        .login-card h2 { font-weight: 300; margin-bottom: 20px; color: #444; }
         .login-card b { color: var(--intersol-blue); }
-        .login-card input { width: 100%; padding: 8px; margin: 5px 0 15px 0; border: 1px solid #999; }
-        .btn-login { background: #0078d7; color: white; border: 1px solid #005a9e; padding: 7px 20px; cursor: pointer; float: right; }
+        .login-card input { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #999; box-sizing: border-box; }
+        .btn-login { background: #0078d7; color: white; border: 1px solid #005a9e; padding: 8px 25px; cursor: pointer; font-weight: bold; border-radius: 2px; }
 
-        /* --- INTERFAZ MAIL --- */
+        /* --- INTERFAZ PRINCIPAL --- */
         #mail-ui { display: flex; flex-direction: column; height: 100vh; }
 
-        .top-info { background: var(--header-bg); padding: 5px 20px; border-bottom: 1px solid var(--border-color); font-size: 11px; display: flex; justify-content: space-between; }
+        .top-info { background: var(--header-bg); padding: 5px 20px; border-bottom: 1px solid var(--border-color); font-size: 11px; display: flex; justify-content: space-between; color: #444; }
 
+        /* Barra de Herramientas Estilo Suite */
         .toolbar { 
             background: linear-gradient(to bottom, #fcfdfe, #e5effa); 
-            height: 80px; border-bottom: 1px solid var(--border-color);
+            height: 85px; border-bottom: 1px solid var(--border-color);
             display: flex; align-items: center; padding: 0 15px; gap: 5px;
         }
         .tool-btn { 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 65px; min-width: 70px; border: 1px solid transparent; cursor: pointer; font-size: 11px;
+            height: 70px; min-width: 75px; border: 1px solid transparent; cursor: pointer; font-size: 11px; color: #333;
         }
-        .tool-btn:hover { background: rgba(255,255,255,0.6); border: 1px solid #ffba00; border-radius: 3px; }
-        .tool-btn span { font-size: 22px; margin-bottom: 2px; }
+        .tool-btn:hover { background: rgba(255,255,255,0.7); border: 1px solid #ffba00; border-radius: 3px; }
+        .tool-btn span { font-size: 26px; margin-bottom: 2px; }
 
+        /* Cuerpo del Correo */
         .main-layout { display: flex; flex-grow: 1; overflow: hidden; }
 
-        .folder-pane { width: 190px; border-right: 1px solid var(--border-color); background: #f0f6fc; }
-        .folder-item { padding: 8px 25px; font-size: 13px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .folder-item.active { background: #c5d7ed; font-weight: bold; border-right: 3px solid var(--intersol-blue); }
-        .unread-count { color: var(--intersol-blue); font-weight: bold; font-size: 11px; }
+        /* Columna 1: Carpetas */
+        .folder-pane { width: 210px; border-right: 1px solid var(--border-color); background: #f0f6fc; }
+        .folder-item { padding: 10px 25px; font-size: 13px; cursor: pointer; display: flex; justify-content: space-between; color: #333; }
+        .folder-item:hover { background: #dfe8f3; }
+        .folder-item.active { background: #c5d7ed; font-weight: bold; border-right: 4px solid var(--intersol-blue); }
+        .unread-badge { color: var(--intersol-blue); font-weight: bold; }
 
-        .message-list { width: 340px; border-right: 1px solid var(--border-color); overflow-y: auto; }
-        .msg-item { padding: 12px 15px; border-bottom: 1px solid #e1e1e1; cursor: pointer; position: relative; }
+        /* Columna 2: Lista */
+        .message-list { width: 360px; border-right: 1px solid var(--border-color); overflow-y: auto; background: white; }
+        .msg-item { padding: 12px 15px; border-bottom: 1px solid #eef1f5; cursor: pointer; position: relative; }
         .msg-item:hover { background: #f2f7fd; }
-        .msg-from { font-weight: bold; font-size: 13px; display: block; }
-        .msg-sub { font-size: 12px; color: #555; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .msg-item.selected { background: #ffebbc; }
+        .msg-from { font-weight: bold; font-size: 13px; color: #000; display: block; }
+        .msg-sub { font-size: 12px; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        .msg-date { position: absolute; top: 12px; right: 15px; font-size: 11px; color: #888; }
 
-        .reading-pane { flex-grow: 1; background: #fff; display: flex; flex-direction: column; }
-        .reading-header { padding: 20px; border-bottom: 1px solid #eee; background: #fafafa; }
+        /* Columna 3: Panel de Lectura */
+        .reading-pane { flex-grow: 1; background: #fff; overflow-y: auto; display: flex; flex-direction: column; }
+        .reading-header { padding: 25px; border-bottom: 1px solid #eee; background: #fafafa; }
+        .reading-header h2 { margin: 0; font-weight: 400; font-size: 22px; color: #000; }
         .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: #31a24c; margin-right: 5px; }
 
-        #compose-modal { position: fixed; top: 15%; left: 25%; width: 50%; background: white; border: 1px solid #666; box-shadow: 0 5px 25px rgba(0,0,0,0.3); z-index: 1000; }
+        /* --- MODAL REDACTAR --- */
+        #compose-modal { 
+            position: fixed; top: 10%; left: 20%; width: 60%; background: white; 
+            border: 1px solid #666; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 5000; 
+        }
+        .modal-toolbar { background: #f5f5f5; padding: 8px 15px; border-bottom: 1px solid #ddd; display: flex; gap: 10px; align-items: center; }
+        .compose-body { padding: 20px; }
+        .compose-body input { width: 100%; border: none; border-bottom: 1px solid #eee; padding: 8px 0; outline: none; margin-bottom: 10px; font-size: 14px; }
+        .compose-body textarea { width: 100%; border: 1px solid #ddd; padding: 10px; resize: none; font-family: inherit; font-size: 14px; box-sizing: border-box; }
+
+        #logout-anim {
+            position: fixed; top:0; left:0; width:100%; height:100%; background: #fff;
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10000;
+        }
     </style>
 </head>
 <body>
@@ -69,25 +92,27 @@
     <div id="login-screen">
         <div class="login-card">
             <h2>Intersol <b>Mail</b></h2>
+            <p style="font-size: 13px; color: #666;">Inicie sesión para continuar</p>
             <input type="text" id="log-email" placeholder="Nombre de usuario">
             <input type="password" id="log-pass" placeholder="Contraseña">
-            <button class="btn-login" onclick="iniciarSesion()">Iniciar sesión</button>
+            <button class="btn-login" onclick="iniciarSesion()">Entrar</button>
         </div>
     </div>
 
     <div id="mail-ui" class="hidden">
         <div class="top-info">
-            <div>Intersol Mail &gt; <span id="folder-title">Bandeja de entrada</span></div>
+            <div>Intersol Suite &gt; <span id="folder-title">Bandeja de entrada</span></div>
             <div>
                 <span class="status-dot"></span> <b id="user-display"></b> | 
-                <a href="#" onclick="cerrarSesion()" style="color: #c00; text-decoration: none;">Cerrar sesión</a>
+                <a href="#" onclick="cerrarSesion()" style="color: #c00; text-decoration: none; font-weight: bold;">Cerrar sesión</a>
             </div>
         </div>
         
         <div class="toolbar">
-            <div class="tool-btn" onclick="abrirRedactar()"><span>📧</span>Nuevo</div>
+            <div class="tool-btn" onclick="abrirRedactar()"><span>📧</span>Correo</div>
             <div class="tool-btn" onclick="eliminarSeleccionado()"><span>🗑️</span>Eliminar</div>
-            <div style="width: 1px; height: 40px; background: #ccc; margin: 0 10px;"></div>
+            <div class="tool-btn"><span>📁</span>Mover a</div>
+            <div style="width: 1px; height: 50px; background: #ccc; margin: 0 10px;"></div>
             <div class="tool-btn" onclick="location.href='msn.html'" style="color: var(--intersol-blue); font-weight: bold;">
                 <span>👥</span>Messenger
             </div>
@@ -95,45 +120,63 @@
 
         <div class="main-layout">
             <div class="folder-pane">
-                <div style="padding: 15px; font-weight: bold; font-size: 11px; color: #666;">CARPETAS</div>
+                <div style="padding: 15px; font-weight: bold; font-size: 11px; color: #666; letter-spacing: 1px;">CARPETAS</div>
                 <div class="folder-item active" id="f-inbox" onclick="cambiarCarpeta('inbox')">
-                    Bandeja de entrada <span class="unread-count" id="count-inbox"></span>
+                    Bandeja de entrada <span id="count-inbox" class="unread-badge"></span>
                 </div>
                 <div class="folder-item" id="f-spam" onclick="cambiarCarpeta('spam')">
-                    Correo no deseado <span class="unread-count" id="count-spam"></span>
+                    Correo no deseado <span id="count-spam" class="unread-badge"></span>
                 </div>
+                <div class="folder-item">Elementos enviados</div>
+                <div class="folder-item">Papelera</div>
             </div>
 
             <div class="message-list" id="lista-correos"></div>
 
             <div class="reading-pane">
                 <div id="v-header" class="reading-header hidden">
-                    <h2 id="v-subject" style="margin:0; font-weight: normal; color: #000;"></h2>
-                    <div style="margin-top:10px; font-size: 12px; color: #555;">
+                    <h2 id="v-subject"></h2>
+                    <div style="margin-top:12px; font-size: 13px; color: #555;">
                         <b>De:</b> <span id="v-from"></span><br>
                         <b>Fecha:</b> <span id="v-date"></span>
                     </div>
                 </div>
-                <div id="v-body" style="padding: 25px; line-height: 1.6; font-size: 14px;">
-                    <p id="v-placeholder" style="color: #999; text-align: center; margin-top: 50px;">No hay ningún mensaje seleccionado.</p>
+                <div id="v-body" style="padding: 25px; line-height: 1.6; font-size: 15px; color: #333;">
+                    <p id="v-placeholder" style="color: #999; text-align: center; margin-top: 100px;">Seleccione un mensaje para verlo en el panel de lectura.</p>
                 </div>
+                <div id="v-adjunto" style="padding: 0 25px 25px 25px;"></div>
             </div>
         </div>
     </div>
 
     <div id="compose-modal" class="hidden">
-        <div style="background: var(--header-bg); padding: 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between;">
-            <b>Nuevo mensaje</b>
-            <span onclick="cerrarRedactar()" style="cursor:pointer;">✕</span>
+        <div style="background: var(--header-bg); padding: 10px 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <b style="font-size: 13px;">Nuevo mensaje</b>
+            <span onclick="cerrarRedactar()" style="cursor:pointer; font-weight: bold;">✕</span>
         </div>
-        <div style="padding: 20px;">
+        
+        <div class="modal-toolbar">
+            <button onclick="document.getElementById('m-file').click()" style="cursor:pointer; border:1px solid #ccc; background:white; padding: 4px 10px; font-size: 12px; border-radius: 2px;">
+                📎 Adjuntar archivo
+            </button>
+            <span id="file-status" style="font-size: 11px; color: #666;">Sin archivos</span>
+        </div>
+
+        <div class="compose-body">
             <input type="text" id="m-para" placeholder="Para:">
             <input type="text" id="m-asunto" placeholder="Asunto:">
-            <textarea id="m-mensaje" rows="10" style="width:100%; border:1px solid #ccc;"></textarea>
-            <div style="text-align: right; margin-top:10px;">
-                <button class="btn-login" onclick="enviarCorreo()">Enviar</button>
+            <textarea id="m-mensaje" rows="12" placeholder="Escriba el mensaje aquí..."></textarea>
+            <input type="file" id="m-file" class="hidden" onchange="actualizarNombreArchivo()">
+            
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="btn-login" id="btn-enviar" onclick="enviarCorreo()" style="padding: 8px 30px;">Enviar</button>
             </div>
         </div>
+    </div>
+
+    <div id="logout-anim">
+        <h2 style="font-weight: 300; font-size: 28px;">Intersol <b>Mail</b></h2>
+        <p>Cerrando sesión de forma segura...</p>
     </div>
 
 <script type="module">
@@ -148,10 +191,11 @@
     let carpetaActual = 'inbox';
     let seleccionadoKey = null;
 
+    // --- SESIÓN ---
     window.iniciarSesion = () => {
         const user = document.getElementById('log-email').value.trim();
-        if(!user) return alert("Ingrese usuario");
-        session = { email: user.includes('@') ? user : user + "@intersol.com" };
+        if(!user) return alert("Ingrese un nombre de usuario");
+        session = { email: user.includes('@') ? user.toLowerCase() : user.toLowerCase() + "@intersol.com" };
         localStorage.setItem('intersol_user', JSON.stringify(session));
         location.reload();
     };
@@ -160,30 +204,35 @@
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('mail-ui').classList.remove('hidden');
         document.getElementById('user-display').innerText = session.email;
-        
+        escucharCorreos();
+    }
+
+    // --- BANDEJA DE ENTRADA ---
+    function escucharCorreos() {
         onValue(ref(db, 'intersol/correos'), (snap) => {
             const list = document.getElementById('lista-correos');
             list.innerHTML = "";
-            let cInbox = 0;
-            let cSpam = 0;
+            let cInbox = 0; let cSpam = 0;
 
             snap.forEach(c => {
                 const m = c.val();
                 if(m.para === session.email) {
-                    const esSpam = ["ganaste", "premio", "oferta"].some(p => m.asunto.toLowerCase().includes(p));
-                    
+                    const esSpam = ["ganaste", "premio", "oferta", "bitcoin", "casino"].some(p => m.asunto.toLowerCase().includes(p));
                     if(esSpam) cSpam++; else cInbox++;
 
                     if((carpetaActual === 'spam' && esSpam) || (carpetaActual === 'inbox' && !esSpam)) {
                         const div = document.createElement('div');
-                        div.className = 'msg-item';
-                        div.innerHTML = `<span class="msg-from">${m.de}</span><span class="msg-sub">${m.asunto}</span>`;
+                        div.className = 'msg-item' + (seleccionadoKey === c.key ? ' selected' : '');
+                        div.innerHTML = `
+                            <span class="msg-date">${new Date(m.fecha).toLocaleDateString()}</span>
+                            <span class="msg-from">${m.de}</span>
+                            <span class="msg-sub">${m.fileData ? '📎 ' : ''}${m.asunto}</span>
+                        `;
                         div.onclick = () => verCorreo(m, c.key);
                         list.prepend(div);
                     }
                 }
             });
-            
             document.getElementById('count-inbox').innerText = cInbox > 0 ? `(${cInbox})` : "";
             document.getElementById('count-spam').innerText = cSpam > 0 ? `(${cSpam})` : "";
         });
@@ -197,32 +246,76 @@
         document.getElementById('v-from').innerText = m.de;
         document.getElementById('v-date').innerText = new Date(m.fecha).toLocaleString();
         document.getElementById('v-body').innerText = m.mensaje;
+        
+        const adj = document.getElementById('v-adjunto');
+        adj.innerHTML = m.fileData ? `<div style="background:#f0f0f0; padding:15px; border:1px solid #ddd; border-radius:4px; display:inline-block;">
+            <span style="font-size:20px;">📄</span> <b style="font-size:13px;">${m.fileName}</b><br>
+            <a href="${m.fileData}" download="${m.fileName}" style="color:var(--intersol-blue); font-size:12px; font-weight:bold; text-decoration:none;">Descargar archivo</a>
+        </div>` : "";
     };
 
-    window.cambiarCarpeta = (c) => {
-        carpetaActual = c;
-        document.querySelectorAll('.folder-item').forEach(i => i.classList.remove('active'));
-        document.getElementById('f-' + c).classList.add('active');
-        document.getElementById('folder-title').innerText = c === 'inbox' ? "Bandeja de entrada" : "Correo no deseado";
-        location.reload(); 
+    // --- REDACTAR Y ADJUNTAR ---
+    window.actualizarNombreArchivo = () => {
+        const file = document.getElementById('m-file').files[0];
+        document.getElementById('file-status').innerText = file ? `📎 ${file.name}` : "Sin archivos";
     };
 
     window.enviarCorreo = () => {
         const para = document.getElementById('m-para').value.trim().toLowerCase();
         const asunto = document.getElementById('m-asunto').value;
         const mensaje = document.getElementById('m-mensaje').value;
-        push(ref(db, 'intersol/correos'), { de: session.email, para, asunto, mensaje, fecha: Date.now() });
-        alert("Mensaje enviado"); cerrarRedactar();
+        const file = document.getElementById('m-file').files[0];
+        const btn = document.getElementById('btn-enviar');
+
+        if(!para || !asunto) return alert("Complete destinatario y asunto");
+
+        btn.disabled = true; btn.innerText = "Enviando...";
+
+        const sendData = (fData = null, fName = null) => {
+            push(ref(db, 'intersol/correos'), {
+                de: session.email, para, asunto, mensaje,
+                fileData: fData, fileName: fName, fecha: Date.now()
+            }).then(() => {
+                alert("Mensaje enviado");
+                cerrarRedactar();
+                btn.disabled = false; btn.innerText = "Enviar";
+            });
+        };
+
+        if(file) {
+            const r = new FileReader();
+            r.onload = (e) => sendData(e.target.result, file.name);
+            r.readAsDataURL(file);
+        } else { sendData(); }
     };
 
-    window.cerrarSesion = () => { localStorage.removeItem('intersol_user'); location.reload(); };
-    window.abrirRedactar = () => document.getElementById('compose-modal').classList.remove('hidden');
-    window.cerrarRedactar = () => document.getElementById('compose-modal').classList.add('hidden');
+    // --- UTILIDADES ---
+    window.cambiarCarpeta = (c) => {
+        carpetaActual = c;
+        document.querySelectorAll('.folder-item').forEach(i => i.classList.remove('active'));
+        document.getElementById('f-' + c).classList.add('active');
+        document.getElementById('folder-title').innerText = c === 'inbox' ? "Bandeja de entrada" : "Correo no deseado";
+        escucharCorreos();
+    };
+
     window.eliminarSeleccionado = () => {
-        if(seleccionadoKey && confirm("¿Eliminar?")) {
+        if(seleccionadoKey && confirm("¿Desea eliminar este mensaje?")) {
             remove(ref(db, `intersol/correos/${seleccionadoKey}`));
             location.reload();
         }
+    };
+
+    window.abrirRedactar = () => document.getElementById('compose-modal').classList.remove('hidden');
+    window.cerrarRedactar = () => {
+        document.getElementById('compose-modal').classList.add('hidden');
+        document.getElementById('m-para').value = ""; document.getElementById('m-asunto').value = "";
+        document.getElementById('m-mensaje').value = ""; document.getElementById('m-file').value = "";
+    };
+
+    window.cerrarSesion = () => {
+        document.getElementById('logout-anim').style.display = 'flex';
+        localStorage.removeItem('intersol_user');
+        setTimeout(() => location.reload(), 1500);
     };
 </script>
 </body>
